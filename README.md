@@ -2,9 +2,9 @@
 
 WCF用户认证的服务端及客户端扩展
 
-服务端 
+服务端  Web.config
 
-''' Web.config
+''''XML
 &lt;extensions&gt;<br />
 &lt;behaviorExtensions&gt;<br />
 &lt;add name=&quot;UserNameValidateServiceBehavior&quot; type=&quot;WCF.AuthProvider.Service.UserValidateBehaviorExtensionElement, WCF.AuthProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /&gt;<br />
@@ -19,8 +19,8 @@ WCF用户认证的服务端及客户端扩展
 '''
 
 
-
-''' 客户端 App.config
+客户端 App.config
+'''XML
 &lt;extensions&gt;<br />
 &lt;behaviorExtensions&gt;<br />
 &lt;add name=&quot;ClientUserValidate&quot; type=&quot;WCF.AuthProvider.Client.UserNameValidateBehaviorExtensionElement, WCF.AuthProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; /&gt;<br />
