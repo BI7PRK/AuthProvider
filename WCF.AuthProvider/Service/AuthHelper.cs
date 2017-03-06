@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Linq;
 
 namespace WCF.AuthProvider.Service
 {
@@ -59,14 +60,41 @@ namespace WCF.AuthProvider.Service
                 return null;
             }
         }
-
-        internal static bool Validate(string userName, string password)
+        /// <summary>
+        /// 用户是否在线
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public static bool Any(string userName)
         {
-            if (dict.ContainsKey(userName))
-            {
-                return dict[userName].AuthKey.Equals(new Guid(password));
-            }
-            return false;
+            return dict != null && dict.ContainsKey(userName);
         }
+
+
+        /// <summary>
+        /// 用户是否在线
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public static bool Any(int userId)
+        {
+            return dict != null && dict.Select(s => s.Value).Any(w => w.UserId == userId);
+        }
+
+
+        internal static CheckStatus Validate(string userName, string password)
+        {
+            if (!dict.ContainsKey(userName))
+            {
+                return CheckStatus.InvalidUser;
+            }
+            if (!dict[userName].AuthKey.Equals(new Guid(password)))
+            {
+                return CheckStatus.InvalidPassword;
+            }
+            return CheckStatus.Success;
+        }
+
+
     }
 }

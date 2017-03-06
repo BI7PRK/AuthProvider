@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace WCF.AuthProvider.Service
 {
+    /// <summary>
+    /// 登陆用户接口
+    /// </summary>
     public interface IAuthUser 
     {
         /// <summary>
@@ -22,5 +25,7 @@ namespace WCF.AuthProvider.Service
         /// </summary>
         [DataMember]
         Guid AuthKey { get; set; }
+
+   
     }
 }

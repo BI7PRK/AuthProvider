@@ -16,10 +16,10 @@ namespace WCF.AuthProvider.Service
             {
                 throw new FaultException("未知的用户");
             }
-
-            if (!AuthHelper.Validate(username, password))
+            var result = AuthHelper.Validate(username, password);
+            if (result != CheckStatus.Success)
             {
-                throw new FaultException("授权验证失败");
+                throw new FaultException(result.GetDescription());
             }
 
             return null;//if success return null.

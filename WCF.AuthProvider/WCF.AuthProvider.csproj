@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client\UserNameValidateBehaviorExtensionElement.cs" />
+    <Compile Include="Service\CheckStatus.cs" />
+    <Compile Include="Service\EnumExtend.cs" />
     <Compile Include="Service\IAuthUser.cs" />
     <Compile Include="Client\UserNameValidateBehavior.cs" />
     <Compile Include="Client\ClientAuthen.cs" />
