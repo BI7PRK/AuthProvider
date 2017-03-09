@@ -13,6 +13,8 @@ namespace WCF.AuthProvider.Service
         [Description("用户已在别处登陆")]
         InvalidPassword,
         [Description("Success")]
-        Success
+        Success,
+        [Description("服务异常")]
+        ServiceError
     }
 }

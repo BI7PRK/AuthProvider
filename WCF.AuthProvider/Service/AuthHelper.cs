@@ -51,11 +51,27 @@ namespace WCF.AuthProvider.Service
         {
             get
             {
-                var headers = OperationContext.Current.IncomingMessageHeaders;
-                var userName = headers.GetHeader<string>("UserName", _NS);
-                if (dict.ContainsKey(userName))
+                
+                if (dict == null)
                 {
-                    return dict[userName];
+                    throw new FaultException("用户登陆失效");
+                }
+                try
+                {
+                    var headers = OperationContext.Current.IncomingMessageHeaders;
+                    var userName = headers.GetHeader<string>("UserName", _NS);
+                    if (string.IsNullOrEmpty(userName))
+                    {
+                        throw new FaultException("未提交用户名");
+                    }
+                    if (dict.ContainsKey(userName))
+                    {
+                        return dict[userName];
+                    }
+                }
+                catch
+                {
+                    throw new FaultException("用户登陆失效");
                 }
                 return null;
             }
@@ -84,6 +100,10 @@ namespace WCF.AuthProvider.Service
 
         internal static CheckStatus Validate(string userName, string password)
         {
+            if (dict == null)
+            {
+                return CheckStatus.ServiceError;
+            }
             if (!dict.ContainsKey(userName))
             {
                 return CheckStatus.InvalidUser;
