@@ -20,27 +20,44 @@ namespace WCF.AuthProvider.Service
         /// <summary>
         /// 上线
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="user">默认标识键为 UserId</param>
         /// <param name="ns"></param>
         public static void AddAuth(IAuthUser user, string ns= "http://www.bi7prk.com/")
         {
-            if (dict.ContainsKey(user.UserName))
+            var strKey = user.UserId.ToString();
+            if (dict.ContainsKey(strKey))
             {
-                dict.Remove(user.UserName); //挤下线
+                dict.Remove(strKey); //挤下线
             }
-            dict.Add(user.UserName, user);
+            dict.Add(strKey, user);
+            _NS = ns;
+        }
+
+        /// <summary>
+        /// 上线
+        /// </summary>
+        /// <param name="key">用户认证标识</param>
+        /// <param name="user"></param>
+        /// <param name="ns"></param>
+        public static void AddAuth(string key, IAuthUser user, string ns = "http://www.bi7prk.com/")
+        {
+            if (dict.ContainsKey(key))
+            {
+                dict.Remove(key); //挤下线
+            }
+            dict.Add(key, user);
             _NS = ns;
         }
 
         /// <summary>
         /// 下线
         /// </summary>
-        /// <param name="userName"></param>
-        public static void Checkout(string userName)
+        /// <param name="userKey">用户登陆标识键名</param>
+        public static void Checkout(string userKey)
         {
-            if (dict.ContainsKey(userName))
+            if (dict.ContainsKey(userKey))
             {
-                dict.Remove(userName);
+                dict.Remove(userKey);
             }
         }
 
@@ -51,27 +68,11 @@ namespace WCF.AuthProvider.Service
         {
             get
             {
-                
-                if (dict == null)
+                var headers = OperationContext.Current.IncomingMessageHeaders;
+                var userName = headers.GetHeader<string>("UserName", _NS);
+                if (dict.ContainsKey(userName))
                 {
-                    throw new FaultException("用户登陆失效");
-                }
-                try
-                {
-                    var headers = OperationContext.Current.IncomingMessageHeaders;
-                    var userName = headers.GetHeader<string>("UserName", _NS);
-                    if (string.IsNullOrEmpty(userName))
-                    {
-                        throw new FaultException("未提交用户名");
-                    }
-                    if (dict.ContainsKey(userName))
-                    {
-                        return dict[userName];
-                    }
-                }
-                catch
-                {
-                    throw new FaultException("用户登陆失效");
+                    return dict[userName];
                 }
                 return null;
             }
@@ -79,11 +80,11 @@ namespace WCF.AuthProvider.Service
         /// <summary>
         /// 用户是否在线
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="userKey">用户登陆标识键名</param>
         /// <returns></returns>
-        public static bool Any(string userName)
+        public static bool Any(string userKey)
         {
-            return dict != null && dict.ContainsKey(userName);
+            return dict != null && dict.ContainsKey(userKey);
         }
 
 
@@ -97,18 +98,23 @@ namespace WCF.AuthProvider.Service
             return dict != null && dict.Select(s => s.Value).Any(w => w.UserId == userId);
         }
 
-
-        internal static CheckStatus Validate(string userName, string password)
+        /// <summary>
+        /// 验证用户
+        /// </summary>
+        /// <param name="userKey">用户登陆标识键名</param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        internal static CheckStatus Validate(string userKey, string password)
         {
             if (dict == null)
             {
                 return CheckStatus.ServiceError;
             }
-            if (!dict.ContainsKey(userName))
+            if (!dict.ContainsKey(userKey))
             {
                 return CheckStatus.InvalidUser;
             }
-            if (!dict[userName].AuthKey.Equals(new Guid(password)))
+            if (!dict[userKey].AuthKey.Equals(new Guid(password)))
             {
                 return CheckStatus.InvalidPassword;
             }
