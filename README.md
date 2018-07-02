@@ -22,10 +22,19 @@ WCF用户认证的服务端及客户端扩展
 客户端 App.config
 ```XML
 <extensions>
-<behaviorExtensions>
-<add name="ClientUserValidate" type="WCF.AuthProvider.Client.UserNameValidateBehaviorExtensionElement, WCF.AuthProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-</behaviorExtensions>
+  <behaviorExtensions>
+  <add name="ClientUserValidate" type="WCF.AuthProvider.Client.UserNameValidateBehaviorExtensionElement, WCF.AuthProvider, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  </behaviorExtensions>
 </extensions>
+
+<behaviors>
+  <endpointBehaviors>
+    <behavior name="UserValidate">
+      <ClientUserValidate />
+    </behavior>
+  </endpointBehaviors>
+</behaviors>
+
 ```
 
 ```C#
