@@ -10,7 +10,7 @@ WCF用户认证的服务端及客户端扩展
 </behaviorExtensions>
 
 ....
-  <-- 添加服务时 behaviorConfiguration 引用该配置名 -->
+  <!-- 添加服务时 behaviorConfiguration 引用该配置名 -->
 <behavior name="ValidateBehavior">
   <UserNameValidateServiceBehavior />
   <serviceMetadata httpGetEnabled="false" httpsGetEnabled="false" />
